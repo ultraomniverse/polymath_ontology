@@ -7,27 +7,28 @@
 <meta name="description" content="Portafolio de Daniel Gascón, polímata. Próximamente aquí se enlazarán sus trabajos.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&family=JetBrains+Mono:wght@400;500&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&family=Cormorant+Garamond:wght@400;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root{
     --white:#ffffff;
     --ink:#000000;
     --soft:#3a3a3a;
     --faint:#8d8d8d;
+    --gold:#9a7b1e;
     --rule:rgba(0,0,0,.16);
     --rule-2:rgba(0,0,0,.34);
     --gothic:"UnifrakturMaguntia",serif;
     --mono:"JetBrains Mono",ui-monospace,monospace;
-    --ui:"Inter",system-ui,sans-serif;
+    --serif:"Cormorant Garamond",Georgia,serif;
   }
   *{box-sizing:border-box}
   html{scroll-behavior:smooth}
   @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
   body{
     margin:0;background:var(--white);color:var(--ink);
-    font-family:var(--ui);font-size:16px;line-height:1.6;
+    font-family:var(--serif);font-size:16px;line-height:1.6;
     -webkit-font-smoothing:antialiased;text-align:center;
-    min-height:100vh;display:flex;flex-direction:column;
+    min-height:100vh;display:flex;flex-direction:column;overflow-x:hidden;
   }
   /* cuadrícula */
   body::before{
@@ -39,135 +40,211 @@
       linear-gradient(to bottom, var(--rule) 1px, transparent 1px);
     background-size:96px 96px, 96px 96px, 24px 24px, 24px 24px;
   }
-  #stoch{position:fixed;inset:0;z-index:0;pointer-events:none;width:100%;height:100%;opacity:.9}
+  /* viñeta */
+  body::after{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+    background:radial-gradient(ellipse at 50% 42%, transparent 32%, rgba(0,0,0,.055) 100%);
+  }
+  #stoch{position:fixed;inset:0;z-index:0;pointer-events:none;width:100%;height:100%;opacity:.85}
+
+  /* ---------- marco ---------- */
+  .frame{position:fixed;inset:9px;z-index:2;pointer-events:none;border:1px solid rgba(0,0,0,.42)}
+  .frame::before{content:"";position:absolute;inset:4px;border:1px solid rgba(0,0,0,.13)}
+  .frame span{position:absolute;width:13px;height:13px;border:0 solid var(--ink)}
+  .frame span:nth-child(1){top:-1px;left:-1px;border-top-width:2px;border-left-width:2px}
+  .frame span:nth-child(2){top:-1px;right:-1px;border-top-width:2px;border-right-width:2px}
+  .frame span:nth-child(3){bottom:-1px;left:-1px;border-bottom-width:2px;border-left-width:2px}
+  .frame span:nth-child(4){bottom:-1px;right:-1px;border-bottom-width:2px;border-right-width:2px}
+
+  /* márgenes técnicos */
+  .margen{
+    position:fixed;top:50%;z-index:2;pointer-events:none;
+    font-family:var(--mono);font-size:.46rem;letter-spacing:.3em;text-transform:uppercase;
+    color:var(--faint);white-space:nowrap;
+  }
+  .margen.izq{left:16px;transform:translateY(-50%) rotate(180deg);writing-mode:vertical-rl}
+  .margen.der{right:16px;transform:translateY(-50%);writing-mode:vertical-rl}
+  @media (max-width:720px){.margen{display:none}}
 
   .wrap{position:relative;z-index:1;flex:1;display:flex;flex-direction:column;
-        width:100%;max-width:860px;margin:0 auto;padding:0 clamp(1rem,4vw,2rem)}
+        width:100%;max-width:820px;margin:0 auto;padding:0 clamp(1rem,5vw,2rem)}
 
   /* ---------- header ---------- */
   header{
-    padding:clamp(2rem,6vw,3.4rem) 0 clamp(1.2rem,3vw,2rem);
+    padding:clamp(2.4rem,7vw,4rem) 0 clamp(1.4rem,3vw,2rem);
     border-bottom:1px solid var(--ink);
-    display:flex;flex-direction:column;align-items:center;gap:1.1rem;
+    display:flex;flex-direction:column;align-items:center;gap:.9rem;
+    position:relative;
   }
-  .pent{width:clamp(66px,13vw,96px);height:auto;display:block;color:var(--ink)}
-  .pent svg{width:100%;height:auto;display:block;overflow:visible}
+  header::after{
+    content:"";position:absolute;left:50%;bottom:-4px;width:70px;height:7px;
+    transform:translateX(-50%);background:var(--white);
+  }
+  .sigilo{width:clamp(140px,30vw,208px);height:auto;color:var(--ink);position:relative}
+  .sigilo svg{width:100%;height:auto;display:block;overflow:visible}
+  .sigilo::before{
+    content:"";position:absolute;inset:-14%;border-radius:50%;z-index:-1;
+    background:radial-gradient(circle, rgba(154,123,30,.20), transparent 68%);
+    filter:blur(6px);
+  }
+  .ring{transform-origin:100px 100px;animation:giro 74s linear infinite}
+  .ring2{transform-origin:100px 100px;animation:giro 128s linear infinite reverse}
+  @keyframes giro{to{transform:rotate(360deg)}}
+  .iris{transition:transform .35s cubic-bezier(.2,.8,.3,1)}
+
   h1{
-    font-family:var(--gothic);font-weight:400;letter-spacing:.01em;
-    font-size:clamp(2.1rem,7.4vw,3.9rem);line-height:1;margin:0;
+    font-family:var(--gothic);font-weight:400;letter-spacing:.005em;
+    font-size:clamp(2.15rem,7.8vw,4rem);line-height:1;margin:.5rem 0 0;
   }
-  .sub{
-    font-family:var(--mono);font-size:.6rem;letter-spacing:.42em;text-transform:uppercase;
-    color:var(--soft);margin:0;
+  .bajo{
+    display:flex;align-items:center;gap:.7rem;width:100%;max-width:340px;
+    font-family:var(--mono);font-size:.5rem;letter-spacing:.34em;text-transform:uppercase;
+    color:var(--faint);margin:0;
   }
+  .bajo::before,.bajo::after{content:"";flex:1;height:1px;background:var(--rule-2)}
+  .bajo b{font-weight:400;color:var(--soft)}
 
   /* ---------- hero ---------- */
-  .hero{padding:clamp(2rem,5vw,3rem) 0;border-bottom:1px solid var(--rule)}
+  .hero{padding:clamp(2rem,5vw,3rem) 0;border-bottom:1px solid var(--rule);position:relative}
+  .motto{
+    font-family:var(--mono);font-size:.58rem;letter-spacing:.62em;text-transform:uppercase;
+    color:var(--gold);margin:0 0 1.3rem;
+  }
   .rol{
-    font-family:var(--mono);font-size:.7rem;letter-spacing:.55em;text-transform:uppercase;
-    margin:0 0 1.4rem;color:var(--ink);
+    font-family:var(--mono);font-size:.72rem;letter-spacing:.5em;text-transform:uppercase;
+    margin:0 0 1.5rem;color:var(--ink);
   }
+  .rol i{font-style:normal;color:var(--gold);letter-spacing:0}
   .declara{
-    font-family:var(--gothic);font-size:clamp(1.15rem,3.2vw,1.65rem);line-height:1.5;
-    max-width:32ch;margin:0 auto;color:var(--ink);
+    font-family:var(--gothic);font-size:clamp(1.18rem,3.3vw,1.7rem);line-height:1.55;
+    max-width:31ch;margin:0 auto;color:var(--ink);
   }
-  .declara em{font-style:normal;text-decoration:underline;text-underline-offset:4px}
+  .declara em{font-style:normal;text-decoration:underline;text-decoration-color:var(--gold);text-underline-offset:5px}
   .sello{
-    display:inline-flex;align-items:center;gap:.5rem;margin-top:1.7rem;
-    font-family:var(--mono);font-size:.55rem;letter-spacing:.24em;text-transform:uppercase;
-    color:var(--soft);border:1px solid var(--rule-2);border-radius:100px;padding:.4rem .8rem;
+    display:inline-flex;align-items:center;gap:.5rem;margin-top:1.8rem;
+    font-family:var(--mono);font-size:.53rem;letter-spacing:.26em;text-transform:uppercase;
+    color:var(--soft);border:1px solid var(--rule-2);border-radius:100px;padding:.4rem .85rem;
+    background:var(--white);
   }
-  .dot{width:5px;height:5px;border-radius:50%;background:var(--ink);animation:p 2.2s ease-in-out infinite}
-  @keyframes p{0%,100%{opacity:1}50%{opacity:.15}}
+  .dot{width:5px;height:5px;border-radius:50%;background:var(--gold);animation:p 2.2s ease-in-out infinite}
+  @keyframes p{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.2;transform:scale(.7)}}
 
   /* ---------- proyectos ---------- */
   section{padding:clamp(2.2rem,5vw,3rem) 0;border-bottom:1px solid var(--rule)}
   .lab{
-    font-family:var(--mono);font-size:.58rem;letter-spacing:.34em;text-transform:uppercase;
-    color:var(--faint);margin:0 0 1.4rem;
+    display:flex;align-items:center;justify-content:center;gap:.85rem;
+    font-family:var(--mono);font-size:.56rem;letter-spacing:.36em;text-transform:uppercase;
+    color:var(--faint);margin:0 0 1.5rem;
   }
-  .indice{list-style:none;margin:0 auto;padding:0;max-width:520px;border-top:1px solid var(--rule)}
-  .indice li{border-bottom:1px solid var(--rule)}
+  .lab .rn{color:var(--gold);letter-spacing:.1em;font-size:.68rem}
+  .lab::before,.lab::after{content:"";width:34px;height:1px;background:var(--rule-2)}
+
+  .indice{list-style:none;margin:0 auto;padding:0;max-width:500px;border-top:1px solid var(--rule)}
+  .indice li{border-bottom:1px solid var(--rule);position:relative}
   .indice a{
     display:flex;align-items:center;justify-content:space-between;gap:1rem;
-    padding:.85rem .3rem;text-decoration:none;color:var(--ink);
-    font-family:var(--mono);font-size:.82rem;letter-spacing:.16em;
-    transition:background .12s,padding .12s;
+    padding:.9rem .55rem;text-decoration:none;color:var(--ink);
+    font-family:var(--mono);font-size:.8rem;letter-spacing:.2em;
+    transition:background .14s,color .14s,padding .14s;
   }
-  .indice a:hover{background:#000;color:#fff;padding-left:.8rem;padding-right:.8rem}
+  .indice a:hover{background:#000;color:#fff;padding-left:1rem;padding-right:1rem}
   .indice .n{color:var(--faint)}
-  .indice a:hover .n{color:#fff}
-  .indice .flecha{font-size:.9rem}
+  .indice a:hover .n{color:var(--gold)}
+  .indice .flecha{font-size:.85rem;transition:transform .14s}
+  .indice a:hover .flecha{transform:translateX(3px)}
   .vacio{
-    font-family:var(--mono);font-size:.62rem;letter-spacing:.22em;text-transform:uppercase;
-    color:var(--faint);padding:.9rem 0;text-align:center;
+    font-family:var(--mono);font-size:.58rem;letter-spacing:.24em;text-transform:uppercase;
+    color:var(--faint);padding:1rem 0 .2rem;
   }
 
   /* ---------- footer ---------- */
   footer{
-    padding:1.6rem 0 2rem;
+    padding:1.7rem 0 2.2rem;display:flex;flex-direction:column;align-items:center;gap:.55rem;
     font-family:"Comic Sans MS","Comic Neue","Chalkboard SE",cursive;
     font-size:9px;line-height:1.4;letter-spacing:.06em;color:var(--faint);
-    display:flex;flex-direction:column;align-items:center;gap:.5rem;
   }
   footer .bye{font-size:9px}
-  footer .legal{font-family:var(--mono);font-size:.5rem;letter-spacing:.2em;text-transform:uppercase;color:#b3b3b3}
+  footer .lux{
+    font-family:var(--mono);font-size:.46rem;letter-spacing:.34em;text-transform:uppercase;color:#b3b3b3;
+  }
 
   /* ---------- player ---------- */
   .player{
-    position:fixed;left:50%;transform:translateX(-50%);bottom:.85rem;z-index:5;
+    position:fixed;left:50%;transform:translateX(-50%);bottom:1.2rem;z-index:5;
     display:flex;align-items:center;gap:.5rem;
-    background:#000;color:#fff;border-radius:100px;padding:.32rem .8rem .32rem .32rem;
-    font-family:var(--mono);font-size:.5rem;letter-spacing:.18em;text-transform:uppercase;
-    box-shadow:0 8px 24px -14px #000;
+    background:#000;color:#fff;border-radius:100px;padding:.32rem .85rem .32rem .32rem;
+    font-family:var(--mono);font-size:.48rem;letter-spacing:.2em;text-transform:uppercase;
+    box-shadow:0 10px 26px -16px #000;
   }
   .player button{
-    width:24px;height:24px;border-radius:50%;border:1px solid rgba(255,255,255,.5);
+    width:24px;height:24px;border-radius:50%;border:1px solid rgba(255,255,255,.45);
     background:transparent;color:#fff;display:grid;place-items:center;cursor:pointer;flex:0 0 auto;
   }
   .player button:hover{background:rgba(255,255,255,.18)}
   .player svg{width:10px;height:10px}
   .eq{display:none;gap:2px;align-items:flex-end;height:9px}
   .player.on .eq{display:flex}
-  .eq i{width:2px;background:#fff;animation:eq .85s ease-in-out infinite}
+  .eq i{width:2px;background:var(--gold);animation:eq .85s ease-in-out infinite}
   .eq i:nth-child(2){animation-delay:.14s}
   .eq i:nth-child(3){animation-delay:.28s}
   @keyframes eq{0%,100%{height:2px}50%{height:9px}}
   .player .meta{white-space:nowrap}
 
-  @media print{#stoch,.player{display:none}body::before{display:none}}
+  @media print{#stoch,.player,.frame,.margen{display:none}body::before{display:none}}
 </style>
 </head>
 <body>
 <canvas id="stoch" aria-hidden="true"></canvas>
+<div class="frame" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+<div class="margen izq" aria-hidden="true">6°14′N · 75°34′W · Medellín</div>
+<div class="margen der" aria-hidden="true">Ordo ab chao · A∴D∴ 2026</div>
 
 <div class="wrap">
 
   <header>
-    <div class="pent" aria-hidden="true">
-      <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="miter">
-        <circle cx="50" cy="50" r="45.5"/>
-        <path d="M50 94 L24.14 14.4 L91.85 63.6 L8.15 63.6 L75.86 14.4 Z"/>
+    <div class="sigilo" aria-hidden="true">
+      <svg viewBox="0 0 200 200" fill="none" stroke="currentColor">
+        <g stroke-width="1" opacity=".55">
+          <path d="M100 4v13M100 183v13M4 100h13M183 100h13M32 32l9 9M159 159l9 9M168 32l-9 9M41 159l-9 9"/>
+          <path d="M100 12v5M100 188v5M12 100h5M188 100h5" stroke-width="2"/>
+        </g>
+        <circle cx="100" cy="100" r="78" stroke-width="1"/>
+        <g class="ring" stroke-width=".8" opacity=".7">
+          <circle cx="100" cy="100" r="88" stroke-dasharray="1 7"/>
+        </g>
+        <g class="ring2" stroke-width="1.1" opacity=".45">
+          <circle cx="100" cy="100" r="69" stroke-dasharray="14 5 2 5"/>
+        </g>
+        <path d="M100 158 L51.2 48.8 L163.7 119.4 L36.3 119.4 L148.8 48.8 Z" stroke-width="2.6" stroke-linejoin="miter"/>
+        <g class="ojo">
+          <path d="M79 100 Q100 84 121 100 Q100 116 79 100 Z" stroke-width="1.6" fill="#fff"/>
+          <circle class="iris" cx="100" cy="100" r="6.4" stroke-width="1.4" fill="#fff"/>
+          <circle cx="100" cy="100" r="2.3" fill="currentColor" stroke="none"/>
+          <path d="M100 84v-5M100 116v5M79 100h-5M121 100h5" stroke-width=".9" opacity=".6"/>
+        </g>
       </svg>
     </div>
+
     <h1>Daniel Gascón</h1>
-    <p class="sub">Portafolio</p>
+    <p class="bajo"><b>Polímata</b></p>
   </header>
 
   <div class="hero">
-    <p class="rol">Polímata</p>
+    <p class="motto">Ordo ab chao</p>
+    <p class="rol"><i>∴</i> Polímata <i>∴</i></p>
     <p class="declara">Próximamente aquí se enlazarán sus <em>trabajos</em>.</p>
     <span class="sello"><span class="dot"></span> Sitio en construcción</span>
   </div>
 
   <section>
-    <p class="lab">Trabajos</p>
+    <p class="lab"><span class="rn">I</span> Trabajos <span class="rn">I</span></p>
     <ul class="indice" id="indice"></ul>
+    <p class="vacio">+ en preparación</p>
   </section>
 
   <footer>
     <span class="bye">goodbye</span>
-    <span class="legal">© 2026 Daniel Gascón</span>
+    <span class="lux">Lux in tenebris · © 2026</span>
   </footer>
 </div>
 
@@ -184,11 +261,7 @@
    ENLACES — pon tus href aquí. Se generan como 01, 02, 03…
    ========================================================== */
 const PROYECTOS = [
-  { href: "#" },
-  { href: "#" },
-  { href: "#" },
-  { href: "#" },
-  { href: "#" }
+  { href: "#" }, { href: "#" }, { href: "#" }, { href: "#" }, { href: "#" }
 ];
 
 const indice = document.getElementById('indice');
@@ -197,26 +270,29 @@ PROYECTOS.forEach((p, i) => {
   const a = document.createElement('a');
   a.href = p.href || '#';
   if (p.href && p.href !== '#') { a.target = '_blank'; a.rel = 'noopener'; }
-  const n = String(i + 1).padStart(2, '0');
-  a.innerHTML = `<span class="n">${n}</span><span class="flecha" aria-hidden="true">→</span>`;
-  li.appendChild(a);
-  indice.appendChild(li);
+  a.innerHTML = `<span class="n">${String(i + 1).padStart(2, '0')}</span><span class="flecha" aria-hidden="true">→</span>`;
+  li.appendChild(a); indice.appendChild(li);
 });
-const vacio = document.createElement('p');
-vacio.className = 'vacio';
-vacio.textContent = '+ en preparación';
-indice.parentElement.appendChild(vacio);
+
+/* el iris sigue al puntero */
+const iris = document.querySelector('.iris');
+const sigilo = document.querySelector('.sigilo');
+addEventListener('mousemove', e => {
+  const r = sigilo.getBoundingClientRect();
+  const cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+  const dx = Math.max(-1, Math.min(1, (e.clientX - cx) / 160));
+  const dy = Math.max(-1, Math.min(1, (e.clientY - cy) / 160));
+  iris.style.transform = `translate(${dx * 3.4}px, ${dy * 3}px)`;
+});
 
 /* ---------- audio ---------- */
 const audio = new Audio('https://archive.org/download/04IannisXenakisAkrata/05%20-%20Iannis%20Xenakis%20-%20Achorripsis.mp3');
-audio.loop = true;
-audio.volume = 0.4;
+audio.loop = true; audio.volume = 0.4;
 const player = document.getElementById('player');
 const playBtn = document.getElementById('play');
 const ico = document.getElementById('ico');
 const PLAY = '<path d="M8 5v14l11-7z"/>';
 const PAUSE = '<path d="M7 5h4v14H7zM13 5h4v14h-4z"/>';
-
 function pintar(on){
   player.classList.toggle('on', on);
   ico.innerHTML = on ? PAUSE : PLAY;
@@ -228,7 +304,6 @@ playBtn.addEventListener('click', () => {
 });
 audio.addEventListener('play', () => pintar(true));
 audio.addEventListener('pause', () => pintar(false));
-
 audio.play().then(() => pintar(true)).catch(() => {});
 document.addEventListener('click', function arranque(){
   if (audio.paused) audio.play().then(() => pintar(true)).catch(() => {});
@@ -241,18 +316,15 @@ document.addEventListener('click', function arranque(){
   const ctx = cv.getContext('2d');
   const quieto = matchMedia('(prefers-reduced-motion: reduce)').matches;
   let W, H, DPR;
-
   function medir(){
     DPR = Math.min(devicePixelRatio || 1, 2);
     W = cv.clientWidth; H = cv.clientHeight;
     cv.width = W * DPR; cv.height = H * DPR;
     ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
-    ctx.clearRect(0, 0, W, H);
-    nube();
+    ctx.clearRect(0, 0, W, H); nube();
   }
-
   function nube(){
-    ctx.fillStyle = 'rgba(0,0,0,.30)';
+    ctx.fillStyle = 'rgba(0,0,0,.28)';
     const n = Math.round((W * H) / 30000);
     for (let i = 0; i < n; i++){
       ctx.beginPath();
@@ -260,65 +332,39 @@ document.addEventListener('click', function arranque(){
       ctx.fill();
     }
   }
-
-  const caminantes = [];
+  const cam = [];
   function sembrar(){
-    caminantes.length = 0;
+    cam.length = 0;
     for (let i = 0; i < 14; i++){
-      caminantes.push({
-        x: Math.random() * W, y: Math.random() * H,
-        dx: (Math.random() - .5), dy: (Math.random() - .5),
-        vida: 180 + Math.random() * 460,
-        paso: .5 + Math.random() * .8
-      });
+      cam.push({ x: Math.random()*W, y: Math.random()*H, dx:(Math.random()-.5), dy:(Math.random()-.5), vida: 180+Math.random()*460, paso:.5+Math.random()*.8 });
     }
   }
-
   let t = 0;
   function paso(){
     ctx.globalCompositeOperation = 'destination-out';
     ctx.fillStyle = 'rgba(0,0,0,.03)';
-    ctx.fillRect(0, 0, W, H);
+    ctx.fillRect(0,0,W,H);
     ctx.globalCompositeOperation = 'source-over';
-
-    t++;
-    if (t % 420 === 0) nube();
-
-    for (const c of caminantes){
-      c.dx += (Math.random() - .5) * .4;
-      c.dy += (Math.random() - .5) * .4;
+    t++; if (t % 420 === 0) nube();
+    for (const c of cam){
+      c.dx += (Math.random()-.5)*.4; c.dy += (Math.random()-.5)*.4;
       c.dx *= .965; c.dy *= .965;
-      const nx = c.x + c.dx * c.paso;
-      const ny = c.y + c.dy * c.paso;
-      ctx.strokeStyle = 'rgba(0,0,0,.17)';
-      ctx.lineWidth = .8;
-      ctx.beginPath();
-      ctx.moveTo(c.x, c.y);
-      ctx.lineTo(nx, ny);
-      ctx.stroke();
-      c.x = nx; c.y = ny;
-      c.vida--;
-      if (c.vida < 0 || c.x < -20 || c.x > W + 20 || c.y < -20 || c.y > H + 20){
-        c.x = Math.random() * W; c.y = Math.random() * H;
-        c.dx = (Math.random() - .5); c.dy = (Math.random() - .5);
-        c.vida = 180 + Math.random() * 460;
+      const nx = c.x + c.dx*c.paso, ny = c.y + c.dy*c.paso;
+      ctx.strokeStyle = 'rgba(0,0,0,.16)'; ctx.lineWidth = .8;
+      ctx.beginPath(); ctx.moveTo(c.x,c.y); ctx.lineTo(nx,ny); ctx.stroke();
+      c.x = nx; c.y = ny; c.vida--;
+      if (c.vida < 0 || c.x < -20 || c.x > W+20 || c.y < -20 || c.y > H+20){
+        c.x = Math.random()*W; c.y = Math.random()*H;
+        c.dx = (Math.random()-.5); c.dy = (Math.random()-.5);
+        c.vida = 180+Math.random()*460;
       }
     }
     if (!quieto) requestAnimationFrame(paso);
   }
-
   medir(); sembrar();
-  if (quieto){ for (let i = 0; i < 900; i++) paso(); }
-  else requestAnimationFrame(paso);
-
-  let timer;
-  addEventListener('resize', () => {
-    clearTimeout(timer);
-    timer = setTimeout(() => { medir(); sembrar(); }, 220);
-  });
-  document.addEventListener('visibilitychange', () => {
-    if (!document.hidden && !quieto) requestAnimationFrame(paso);
-  });
+  if (quieto){ for (let i=0;i<900;i++) paso(); } else requestAnimationFrame(paso);
+  let tm; addEventListener('resize', () => { clearTimeout(tm); tm = setTimeout(() => { medir(); sembrar(); }, 220); });
+  document.addEventListener('visibilitychange', () => { if (!document.hidden && !quieto) requestAnimationFrame(paso); });
 })();
 </script>
 </body>
