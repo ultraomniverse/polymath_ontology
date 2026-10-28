@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Daniel Gascón — Polímata</title>
-<meta name="description" content="Portafolio de Daniel Gascón, polímata. Próximamente aquí se enlazarán sus trabajos.">
+<meta name="description" content="Portafolio de Daniel Gascón, polímata. Proyecto I: un autómata de renta. Aporte directo en Bitcoin.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&family=Cormorant+Garamond:wght@400;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -148,14 +148,35 @@
     transition:background .14s,color .14s,padding .14s;
   }
   .indice a:hover{background:#000;color:#fff;padding-left:1rem;padding-right:1rem}
-  .indice .n{color:var(--faint)}
+  .indice .izq{display:flex;align-items:center;gap:.75rem;min-width:0}
+  .indice .n{color:var(--faint);flex:0 0 auto}
   .indice a:hover .n{color:var(--gold)}
-  .indice .flecha{font-size:.85rem;transition:transform .14s}
+  .indice .nom{
+    font-family:var(--gothic);font-size:1.05rem;letter-spacing:.02em;
+    color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .indice a:hover .nom{color:#fff}
+  .indice .flecha{font-size:.85rem;transition:transform .14s;flex:0 0 auto}
   .indice a:hover .flecha{transform:translateX(3px)}
   .vacio{
     font-family:var(--mono);font-size:.58rem;letter-spacing:.24em;text-transform:uppercase;
     color:var(--faint);padding:1rem 0 .2rem;
   }
+
+  /* ---------- óbolo ---------- */
+  .obolo{display:flex;flex-direction:column;align-items:center;gap:1.1rem}
+  .qr{width:172px;height:172px;border:1px solid var(--rule-2);padding:9px;background:#fff;display:block}
+  .qr img{width:100%;height:100%;display:block;image-rendering:pixelated}
+  .addr{font-family:var(--mono);font-size:.6rem;letter-spacing:.02em;word-break:break-all;
+    max-width:34ch;line-height:1.7;color:var(--ink);background:#fff;border:1px solid var(--rule);padding:.6rem .8rem}
+  .acciones{display:flex;gap:.5rem;flex-wrap:wrap;justify-content:center}
+  .btn{font-family:var(--mono);font-size:.56rem;letter-spacing:.2em;text-transform:uppercase;
+    text-decoration:none;padding:.6rem 1rem;border:1px solid var(--ink);color:var(--ink);background:#fff;cursor:pointer;
+    transition:background .14s,color .14s}
+  .btn:hover{background:#000;color:#fff}
+  .btn.solido{background:#000;color:#fff}
+  .btn.solido:hover{background:var(--gold);border-color:var(--gold);color:#000}
+  .nota{font-family:var(--mono);font-size:.5rem;letter-spacing:.2em;text-transform:uppercase;color:var(--faint);max-width:44ch}
 
   /* ---------- footer ---------- */
   footer{
@@ -236,10 +257,26 @@
     <span class="sello"><span class="dot"></span> Sitio en construcción</span>
   </div>
 
-  <section>
+  <section id="trabajos">
     <p class="lab"><span class="rn">I</span> Trabajos <span class="rn">I</span></p>
     <ul class="indice" id="indice"></ul>
     <p class="vacio">+ en preparación</p>
+  </section>
+
+  <section id="obolo">
+    <p class="lab"><span class="rn">II</span> Óbolo <span class="rn">II</span></p>
+    <div class="obolo">
+      <a class="qr" href="bitcoin:bc1qudtspk54khfheenww4qw6l7f9zks48da09m9av" aria-label="Abrir en monedero Bitcoin">
+        <img id="qr" alt="Código QR con la dirección Bitcoin"
+             src="https://api.qrserver.com/v1/create-qr-code/?size=260x260&amp;margin=0&amp;color=000000&amp;bgcolor=ffffff&amp;data=bitcoin%3Abc1qudtspk54khfheenww4qw6l7f9zks48da09m9av">
+      </a>
+      <p class="addr" id="addr">bc1qudtspk54khfheenww4qw6l7f9zks48da09m9av</p>
+      <div class="acciones">
+        <button class="btn solido" id="copiar">Copiar dirección</button>
+        <a class="btn" href="bitcoin:bc1qudtspk54khfheenww4qw6l7f9zks48da09m9av">Abrir en monedero</a>
+      </div>
+      <p class="nota">Bitcoin · BlueWallet · sin intermediarios</p>
+    </div>
   </section>
 
   <footer>
@@ -257,8 +294,12 @@
 </div>
 
 <script>
+/* ==========================================================
+   PROYECTOS — nombre opcional, href obligatorio.
+   ========================================================== */
 const PROYECTOS = [
-  { href: "#" }, { href: "#" }, { href: "#" }, { href: "#" }, { href: "#" }
+  { nombre: "Autómata", href: "automata.html" },
+  { href: "#" }, { href: "#" }, { href: "#" }, { href: "#" }
 ];
 
 const indice = document.getElementById('indice');
@@ -266,9 +307,32 @@ PROYECTOS.forEach((p, i) => {
   const li = document.createElement('li');
   const a = document.createElement('a');
   a.href = p.href || '#';
-  if (p.href && p.href !== '#') { a.target = '_blank'; a.rel = 'noopener'; }
-  a.innerHTML = `<span class="n">${String(i + 1).padStart(2, '0')}</span><span class="flecha" aria-hidden="true">→</span>`;
+  if (p.href && p.href !== '#' && !p.href.endsWith('.html')) { a.target = '_blank'; a.rel = 'noopener'; }
+  const n = String(i + 1).padStart(2, '0');
+  a.innerHTML = p.nombre
+    ? `<span class="izq"><span class="n">${n}</span><span class="nom">${p.nombre}</span></span><span class="flecha" aria-hidden="true">→</span>`
+    : `<span class="n">${n}</span><span class="flecha" aria-hidden="true">→</span>`;
   li.appendChild(a); indice.appendChild(li);
+});
+
+/* ---------- óbolo ---------- */
+const DIR = 'bc1qudtspk54khfheenww4qw6l7f9zks48da09m9av';
+const copiar = document.getElementById('copiar');
+copiar.addEventListener('click', async () => {
+  try { await navigator.clipboard.writeText(DIR); copiar.textContent = 'Copiada'; }
+  catch {
+    const r = document.createRange();
+    r.selectNodeContents(document.getElementById('addr'));
+    const s = getSelection(); s.removeAllRanges(); s.addRange(r);
+    copiar.textContent = 'Seleccionada';
+  }
+  setTimeout(() => copiar.textContent = 'Copiar dirección', 1800);
+});
+document.getElementById('qr').addEventListener('error', function(){
+  this.replaceWith(Object.assign(document.createElement('p'), {
+    textContent: 'QR no disponible · usa la dirección',
+    style: 'font-size:10px;color:#8d8d8d;padding:1rem;font-family:monospace'
+  }));
 });
 
 /* el iris sigue al puntero */
