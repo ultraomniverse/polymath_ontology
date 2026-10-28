@@ -7,18 +7,16 @@
 <meta name="description" content="Portafolio de Daniel Gascón, polímata. Próximamente aquí se enlazarán sus trabajos.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,700;1,9..144,400&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&family=JetBrains+Mono:wght@400;500&family=Inter:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root{
-    --paper:#f7f4ec;
-    --paper-2:#efeade;
-    --ink:#14171a;
-    --ink-soft:#454b52;
-    --ink-faint:#8a9099;
-    --line:#1f3a5f;
-    --accent:#7a1f2b;
-    --rule:rgba(20,23,26,.18);
-    --serif:"Fraunces",Georgia,serif;
+    --white:#ffffff;
+    --ink:#000000;
+    --soft:#3a3a3a;
+    --faint:#8d8d8d;
+    --rule:rgba(0,0,0,.16);
+    --rule-2:rgba(0,0,0,.34);
+    --gothic:"UnifrakturMaguntia",serif;
     --mono:"JetBrains Mono",ui-monospace,monospace;
     --ui:"Inter",system-ui,sans-serif;
   }
@@ -26,187 +24,150 @@
   html{scroll-behavior:smooth}
   @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
   body{
-    margin:0;background:var(--paper);color:var(--ink);
-    font-family:var(--ui);font-size:16px;line-height:1.65;
-    -webkit-font-smoothing:antialiased;
+    margin:0;background:var(--white);color:var(--ink);
+    font-family:var(--ui);font-size:16px;line-height:1.6;
+    -webkit-font-smoothing:antialiased;text-align:center;
+    min-height:100vh;display:flex;flex-direction:column;
   }
-  /* cuadrícula de cuaderno matemático */
+  /* cuadrícula */
   body::before{
     content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
     background-image:
-      linear-gradient(to right, rgba(31,58,95,.16) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(31,58,95,.16) 1px, transparent 1px),
-      linear-gradient(to right, rgba(31,58,95,.075) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(31,58,95,.075) 1px, transparent 1px);
-    background-size:100px 100px, 100px 100px, 20px 20px, 20px 20px;
+      linear-gradient(to right, var(--rule-2) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--rule-2) 1px, transparent 1px),
+      linear-gradient(to right, var(--rule) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--rule) 1px, transparent 1px);
+    background-size:96px 96px, 96px 96px, 24px 24px, 24px 24px;
   }
-  #stoch{position:fixed;inset:0;z-index:0;pointer-events:none;width:100%;height:100%}
+  #stoch{position:fixed;inset:0;z-index:0;pointer-events:none;width:100%;height:100%;opacity:.9}
 
-  .shell{position:relative;z-index:1;max-width:1080px;margin:0 auto;padding:0 clamp(1.1rem,4vw,2.5rem)}
+  .wrap{position:relative;z-index:1;flex:1;display:flex;flex-direction:column;
+        width:100%;max-width:860px;margin:0 auto;padding:0 clamp(1rem,4vw,2rem)}
 
-  /* ---------- cabecera ---------- */
-  header.top{
-    display:flex;align-items:center;gap:1rem;flex-wrap:wrap;
-    padding:1.4rem 0 1.1rem;border-bottom:1px solid var(--rule);
+  /* ---------- header ---------- */
+  header{
+    padding:clamp(2rem,6vw,3.4rem) 0 clamp(1.2rem,3vw,2rem);
+    border-bottom:1px solid var(--ink);
+    display:flex;flex-direction:column;align-items:center;gap:1.1rem;
   }
-  .id{display:flex;flex-direction:column;line-height:1.1}
-  .id b{font-family:var(--serif);font-weight:700;font-size:1rem;letter-spacing:.01em}
-  .id span{font-family:var(--mono);font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-faint);margin-top:.3rem}
-  nav{margin-left:auto;display:flex;gap:1.3rem;font-family:var(--mono);font-size:.68rem;letter-spacing:.14em;text-transform:uppercase}
-  nav a{color:var(--ink-soft);text-decoration:none;border-bottom:1px solid transparent;padding-bottom:2px}
-  nav a:hover{color:var(--accent);border-bottom-color:var(--accent)}
+  .pent{width:clamp(66px,13vw,96px);height:auto;display:block;color:var(--ink)}
+  .pent svg{width:100%;height:auto;display:block;overflow:visible}
+  h1{
+    font-family:var(--gothic);font-weight:400;letter-spacing:.01em;
+    font-size:clamp(2.1rem,7.4vw,3.9rem);line-height:1;margin:0;
+  }
+  .sub{
+    font-family:var(--mono);font-size:.6rem;letter-spacing:.42em;text-transform:uppercase;
+    color:var(--soft);margin:0;
+  }
 
   /* ---------- hero ---------- */
-  .hero{padding:clamp(2.2rem,7vw,4.5rem) 0 clamp(2rem,5vw,3rem);border-bottom:1px solid var(--rule)}
-  .kicker{
-    font-family:var(--mono);font-size:.66rem;letter-spacing:.28em;text-transform:uppercase;
-    color:var(--accent);margin:0 0 1.4rem;display:flex;align-items:center;gap:.7rem;
-  }
-  .kicker::after{content:"";flex:1;height:1px;background:var(--rule)}
-  h1{
-    font-family:var(--serif);font-weight:700;letter-spacing:-.025em;line-height:.95;
-    font-size:clamp(2.6rem,8vw,4.6rem);margin:0 0 .35rem;
-  }
+  .hero{padding:clamp(2rem,5vw,3rem) 0;border-bottom:1px solid var(--rule)}
   .rol{
-    font-family:var(--mono);font-size:.78rem;letter-spacing:.34em;text-transform:uppercase;
-    color:var(--ink-soft);margin:0 0 2rem;
-  }
-  .firma{
-    display:block;width:min(100%,430px);height:auto;margin:0 0 1.6rem;
-    mix-blend-mode:multiply;filter:contrast(1.08);
+    font-family:var(--mono);font-size:.7rem;letter-spacing:.55em;text-transform:uppercase;
+    margin:0 0 1.4rem;color:var(--ink);
   }
   .declara{
-    font-family:var(--serif);font-size:clamp(1.15rem,2.6vw,1.5rem);line-height:1.45;
-    max-width:30ch;margin:0;color:var(--ink);
+    font-family:var(--gothic);font-size:clamp(1.15rem,3.2vw,1.65rem);line-height:1.5;
+    max-width:32ch;margin:0 auto;color:var(--ink);
   }
-  .declara em{font-style:italic;color:var(--accent)}
-  .sellado{
-    display:inline-flex;align-items:center;gap:.55rem;margin-top:1.6rem;
-    font-family:var(--mono);font-size:.64rem;letter-spacing:.18em;text-transform:uppercase;
-    color:var(--ink-soft);border:1px solid var(--rule);border-radius:100px;padding:.42rem .85rem;
-    background:rgba(247,244,236,.75);
+  .declara em{font-style:normal;text-decoration:underline;text-underline-offset:4px}
+  .sello{
+    display:inline-flex;align-items:center;gap:.5rem;margin-top:1.7rem;
+    font-family:var(--mono);font-size:.55rem;letter-spacing:.24em;text-transform:uppercase;
+    color:var(--soft);border:1px solid var(--rule-2);border-radius:100px;padding:.4rem .8rem;
   }
-  .dot{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pulse 2.4s ease-in-out infinite}
-  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+  .dot{width:5px;height:5px;border-radius:50%;background:var(--ink);animation:p 2.2s ease-in-out infinite}
+  @keyframes p{0%,100%{opacity:1}50%{opacity:.15}}
 
-  /* ---------- bloques ---------- */
-  section{padding:clamp(2.4rem,6vw,3.6rem) 0;border-bottom:1px solid var(--rule)}
-  .shead{display:flex;align-items:baseline;gap:1rem;margin-bottom:1.8rem;flex-wrap:wrap}
-  .snum{font-family:var(--mono);font-size:.66rem;letter-spacing:.2em;color:var(--ink-faint)}
-  h2{font-family:var(--serif);font-weight:700;font-size:clamp(1.5rem,3.4vw,2.05rem);letter-spacing:-.02em;margin:0}
-  .sdesc{font-size:.9rem;color:var(--ink-soft);max-width:56ch;margin:-.9rem 0 1.8rem}
-
-  /* tarjetas de proyecto */
-  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:1rem}
-  .card{
-    display:flex;flex-direction:column;justify-content:space-between;gap:1.2rem;
-    border:1px solid var(--rule);background:rgba(255,255,255,.6);border-radius:2px;
-    padding:1.15rem 1.2rem 1.1rem;text-decoration:none;color:inherit;
-    transition:background .15s, border-color .15s, transform .15s;
-    min-height:150px;
+  /* ---------- proyectos ---------- */
+  section{padding:clamp(2.2rem,5vw,3rem) 0;border-bottom:1px solid var(--rule)}
+  .lab{
+    font-family:var(--mono);font-size:.58rem;letter-spacing:.34em;text-transform:uppercase;
+    color:var(--faint);margin:0 0 1.4rem;
   }
-  .card:hover{background:#fff;border-color:var(--ink);transform:translateY(-2px)}
-  .card .tag{font-family:var(--mono);font-size:.58rem;letter-spacing:.18em;text-transform:uppercase;color:var(--accent)}
-  .card h3{font-family:var(--serif);font-weight:700;font-size:1.12rem;margin:.45rem 0 0;letter-spacing:-.01em}
-  .card p{font-size:.83rem;color:var(--ink-soft);margin:.45rem 0 0}
-  .card .go{font-family:var(--mono);font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-faint);display:flex;align-items:center;gap:.4rem}
-  .card:hover .go{color:var(--accent)}
-  .card.vacia{border-style:dashed;background:transparent;justify-content:center;align-items:flex-start}
-  .card.vacia h3{color:var(--ink-faint);font-weight:400}
-
-  /* contacto */
-  .contacto p{max-width:52ch;color:var(--ink-soft);font-size:.94rem}
-  .mail{
-    display:inline-block;margin-top:1rem;font-family:var(--mono);font-size:.9rem;
-    color:var(--ink);text-decoration:none;border-bottom:1px solid var(--accent);padding-bottom:2px;
+  .indice{list-style:none;margin:0 auto;padding:0;max-width:520px;border-top:1px solid var(--rule)}
+  .indice li{border-bottom:1px solid var(--rule)}
+  .indice a{
+    display:flex;align-items:center;justify-content:space-between;gap:1rem;
+    padding:.85rem .3rem;text-decoration:none;color:var(--ink);
+    font-family:var(--mono);font-size:.82rem;letter-spacing:.16em;
+    transition:background .12s,padding .12s;
   }
-  .mail:hover{color:var(--accent)}
-
-  footer.bot{
-    display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;
-    padding:2rem 0 3rem;font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;
-    text-transform:uppercase;color:var(--ink-faint);
+  .indice a:hover{background:#000;color:#fff;padding-left:.8rem;padding-right:.8rem}
+  .indice .n{color:var(--faint)}
+  .indice a:hover .n{color:#fff}
+  .indice .flecha{font-size:.9rem}
+  .vacio{
+    font-family:var(--mono);font-size:.62rem;letter-spacing:.22em;text-transform:uppercase;
+    color:var(--faint);padding:.9rem 0;text-align:center;
   }
 
-  /* reproductor */
+  /* ---------- footer ---------- */
+  footer{
+    padding:1.6rem 0 2rem;
+    font-family:"Comic Sans MS","Comic Neue","Chalkboard SE",cursive;
+    font-size:9px;line-height:1.4;letter-spacing:.06em;color:var(--faint);
+    display:flex;flex-direction:column;align-items:center;gap:.5rem;
+  }
+  footer .bye{font-size:9px}
+  footer .legal{font-family:var(--mono);font-size:.5rem;letter-spacing:.2em;text-transform:uppercase;color:#b3b3b3}
+
+  /* ---------- player ---------- */
   .player{
-    position:fixed;right:1rem;bottom:1rem;z-index:5;
-    display:flex;align-items:center;gap:.65rem;
-    background:rgba(20,23,26,.92);color:#f2efe7;border-radius:100px;
-    padding:.5rem .95rem .5rem .5rem;font-family:var(--mono);font-size:.62rem;
-    letter-spacing:.1em;text-transform:uppercase;box-shadow:0 10px 30px -14px rgba(0,0,0,.6);
-    backdrop-filter:blur(6px);max-width:calc(100vw - 2rem);
+    position:fixed;left:50%;transform:translateX(-50%);bottom:.85rem;z-index:5;
+    display:flex;align-items:center;gap:.5rem;
+    background:#000;color:#fff;border-radius:100px;padding:.32rem .8rem .32rem .32rem;
+    font-family:var(--mono);font-size:.5rem;letter-spacing:.18em;text-transform:uppercase;
+    box-shadow:0 8px 24px -14px #000;
   }
   .player button{
-    width:30px;height:30px;border-radius:50%;border:1px solid rgba(255,255,255,.35);
-    background:transparent;color:inherit;display:grid;place-items:center;cursor:pointer;flex:0 0 auto;
+    width:24px;height:24px;border-radius:50%;border:1px solid rgba(255,255,255,.5);
+    background:transparent;color:#fff;display:grid;place-items:center;cursor:pointer;flex:0 0 auto;
   }
-  .player button:hover{background:rgba(255,255,255,.12)}
-  .player svg{width:12px;height:12px}
-  .player .meta{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .player .meta b{font-weight:500;letter-spacing:.14em}
-  .player .meta span{display:block;font-size:.55rem;color:#a9a29a;letter-spacing:.14em;margin-top:2px}
+  .player button:hover{background:rgba(255,255,255,.18)}
+  .player svg{width:10px;height:10px}
+  .eq{display:none;gap:2px;align-items:flex-end;height:9px}
   .player.on .eq{display:flex}
-  .eq{display:none;gap:2px;align-items:flex-end;height:11px;margin-left:.1rem}
-  .eq i{width:2px;background:#c9666f;animation:eq .9s ease-in-out infinite}
-  .eq i:nth-child(2){animation-delay:.15s}
-  .eq i:nth-child(3){animation-delay:.3s}
-  @keyframes eq{0%,100%{height:3px}50%{height:11px}}
-  @media (max-width:560px){.player .meta span{display:none}}
+  .eq i{width:2px;background:#fff;animation:eq .85s ease-in-out infinite}
+  .eq i:nth-child(2){animation-delay:.14s}
+  .eq i:nth-child(3){animation-delay:.28s}
+  @keyframes eq{0%,100%{height:2px}50%{height:9px}}
+  .player .meta{white-space:nowrap}
 
-  @media print{
-    #stoch,.player{display:none}
-    body::before{display:none}
-  }
+  @media print{#stoch,.player{display:none}body::before{display:none}}
 </style>
 </head>
 <body>
 <canvas id="stoch" aria-hidden="true"></canvas>
 
-<div class="shell">
-  <header class="top">
-    <div class="id">
-      <b>Daniel Gascón</b>
-      <span>Portafolio</span>
+<div class="wrap">
+
+  <header>
+    <div class="pent" aria-hidden="true">
+      <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="miter">
+        <circle cx="50" cy="50" r="45.5"/>
+        <path d="M50 94 L24.14 14.4 L91.85 63.6 L8.15 63.6 L75.86 14.4 Z"/>
+      </svg>
     </div>
-    <nav>
-      <a href="#trabajos">Trabajos</a>
-      <a href="#contacto">Contacto</a>
-    </nav>
+    <h1>Daniel Gascón</h1>
+    <p class="sub">Portafolio</p>
   </header>
 
-  <section class="hero">
-    <p class="kicker">Medellín · Colombia</p>
-    <h1>Daniel<br>Gascón</h1>
+  <div class="hero">
     <p class="rol">Polímata</p>
-
-    <img class="firma" src="https://i.ibb.co/tpVWtdng/firma-daniel-gascon.png" alt="Firma de Daniel Gascón" width="2259" height="609">
-
     <p class="declara">Próximamente aquí se enlazarán sus <em>trabajos</em>.</p>
-    <span class="sellado"><span class="dot"></span> Sitio en construcción</span>
+    <span class="sello"><span class="dot"></span> Sitio en construcción</span>
+  </div>
+
+  <section>
+    <p class="lab">Trabajos</p>
+    <ul class="indice" id="indice"></ul>
   </section>
 
-  <section id="trabajos">
-    <div class="shead">
-      <span class="snum">01</span>
-      <h2>Trabajos</h2>
-    </div>
-    <p class="sdesc">Índice de proyectos. Cada entrada enlaza a su ficha o repositorio. Los espacios marcados permanecen abiertos.</p>
-    <div class="grid" id="grid"></div>
-  </section>
-
-  <section id="contacto" class="contacto">
-    <div class="shead">
-      <span class="snum">02</span>
-      <h2>Contacto</h2>
-    </div>
-    <p>Para propuestas de colaboración, encargos o prensa. Tiempo de respuesta habitual: una semana.</p>
-    <a class="mail" href="mailto:hola@danielgascon.co">hola@danielgascon.co</a>
-  </section>
-
-  <footer class="bot">
-    <span>© 2026 Daniel Gascón</span>
-    <span>Fondo estocástico · Xenakis, <em>Achorripsis</em> (1957)</span>
+  <footer>
+    <span class="bye">goodbye</span>
+    <span class="legal">© 2026 Daniel Gascón</span>
   </footer>
 </div>
 
@@ -215,59 +176,60 @@
     <svg id="ico" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
   </button>
   <span class="eq" aria-hidden="true"><i></i><i></i><i></i></span>
-  <span class="meta"><b>Xenakis</b><span>Achorripsis · 1957</span></span>
+  <span class="meta">Xenakis</span>
 </div>
 
 <script>
-/* ============================================================
-   PROYECTOS — edita aquí tus enlaces.
-   Añade o quita objetos: { tag, titulo, desc, href }
-   ============================================================ */
+/* ==========================================================
+   ENLACES — pon tus href aquí. Se generan como 01, 02, 03…
+   ========================================================== */
 const PROYECTOS = [
-  { tag: "Criptografía", titulo: "Espacio reservado", desc: "Ficha pendiente de publicación.", href: "#" },
-  { tag: "Matemática",   titulo: "Espacio reservado", desc: "Ficha pendiente de publicación.", href: "#" },
-  { tag: "Filosofía",    titulo: "Espacio reservado", desc: "Ficha pendiente de publicación.", href: "#" }
+  { href: "#" },
+  { href: "#" },
+  { href: "#" },
+  { href: "#" },
+  { href: "#" }
 ];
 
-const grid = document.getElementById('grid');
-PROYECTOS.forEach(p => {
+const indice = document.getElementById('indice');
+PROYECTOS.forEach((p, i) => {
+  const li = document.createElement('li');
   const a = document.createElement('a');
-  a.className = 'card';
   a.href = p.href || '#';
   if (p.href && p.href !== '#') { a.target = '_blank'; a.rel = 'noopener'; }
-  a.innerHTML = `<div><span class="tag">${p.tag}</span><h3>${p.titulo}</h3><p>${p.desc}</p></div>
-                 <span class="go">Abrir <span aria-hidden="true">↗</span></span>`;
-  grid.appendChild(a);
+  const n = String(i + 1).padStart(2, '0');
+  a.innerHTML = `<span class="n">${n}</span><span class="flecha" aria-hidden="true">→</span>`;
+  li.appendChild(a);
+  indice.appendChild(li);
 });
-const vacia = document.createElement('div');
-vacia.className = 'card vacia';
-vacia.innerHTML = '<h3>+ Próximo proyecto</h3><p style="margin-top:.3rem;font-size:.8rem;color:var(--ink-faint)">En preparación</p>';
-grid.appendChild(vacia);
+const vacio = document.createElement('p');
+vacio.className = 'vacio';
+vacio.textContent = '+ en preparación';
+indice.parentElement.appendChild(vacio);
 
 /* ---------- audio ---------- */
 const audio = new Audio('https://archive.org/download/04IannisXenakisAkrata/05%20-%20Iannis%20Xenakis%20-%20Achorripsis.mp3');
 audio.loop = true;
-audio.volume = 0.45;
+audio.volume = 0.4;
 const player = document.getElementById('player');
 const playBtn = document.getElementById('play');
 const ico = document.getElementById('ico');
-const ICON_PLAY = '<path d="M8 5v14l11-7z"/>';
-const ICON_PAUSE = '<path d="M7 5h4v14H7zM13 5h4v14h-4z"/>';
+const PLAY = '<path d="M8 5v14l11-7z"/>';
+const PAUSE = '<path d="M7 5h4v14H7zM13 5h4v14h-4z"/>';
 
-function pintar(sonando){
-  player.classList.toggle('on', sonando);
-  ico.innerHTML = sonando ? ICON_PAUSE : ICON_PLAY;
-  playBtn.setAttribute('aria-label', sonando ? 'Pausar sonido' : 'Reproducir sonido');
+function pintar(on){
+  player.classList.toggle('on', on);
+  ico.innerHTML = on ? PAUSE : PLAY;
+  playBtn.setAttribute('aria-label', on ? 'Pausar sonido' : 'Reproducir sonido');
 }
 playBtn.addEventListener('click', () => {
-  if (audio.paused) audio.play().then(() => pintar(true)).catch(() => pintar(false));
+  if (audio.paused) audio.play().then(() => pintar(true)).catch(() => {});
   else { audio.pause(); pintar(false); }
 });
 audio.addEventListener('play', () => pintar(true));
 audio.addEventListener('pause', () => pintar(false));
 
-/* intento de reproducción al cargar (puede requerir gesto) */
-audio.play().then(() => pintar(true)).catch(() => pintar(false));
+audio.play().then(() => pintar(true)).catch(() => {});
 document.addEventListener('click', function arranque(){
   if (audio.paused) audio.play().then(() => pintar(true)).catch(() => {});
   document.removeEventListener('click', arranque);
@@ -289,60 +251,47 @@ document.addEventListener('click', function arranque(){
     nube();
   }
 
-  /* nube de puntos tipo Poisson */
   function nube(){
-    ctx.fillStyle = 'rgba(31,58,95,.30)';
-    const n = Math.round((W * H) / 26000);
+    ctx.fillStyle = 'rgba(0,0,0,.30)';
+    const n = Math.round((W * H) / 30000);
     for (let i = 0; i < n; i++){
       ctx.beginPath();
-      ctx.arc(Math.random() * W, Math.random() * H, Math.random() * 1.1 + .35, 0, 6.2832);
+      ctx.arc(Math.random() * W, Math.random() * H, Math.random() * .95 + .3, 0, 6.2832);
       ctx.fill();
-    }
-    /* marcas de distribución */
-    ctx.strokeStyle = 'rgba(122,31,43,.16)';
-    ctx.lineWidth = 1;
-    for (let k = 0; k < 3; k++){
-      const x0 = Math.random() * W, y0 = Math.random() * H;
-      ctx.beginPath();
-      ctx.moveTo(x0, y0);
-      ctx.lineTo(x0 + (Math.random() - .5) * 90, y0 + (Math.random() - .5) * 90);
-      ctx.stroke();
     }
   }
 
   const caminantes = [];
-  const N = 16;
   function sembrar(){
     caminantes.length = 0;
-    for (let i = 0; i < N; i++){
+    for (let i = 0; i < 14; i++){
       caminantes.push({
         x: Math.random() * W, y: Math.random() * H,
         dx: (Math.random() - .5), dy: (Math.random() - .5),
-        vida: 200 + Math.random() * 500,
-        paso: .55 + Math.random() * .9
+        vida: 180 + Math.random() * 460,
+        paso: .5 + Math.random() * .8
       });
     }
   }
 
   let t = 0;
   function paso(){
-    /* desvanecido de estelas */
     ctx.globalCompositeOperation = 'destination-out';
-    ctx.fillStyle = 'rgba(0,0,0,.035)';
+    ctx.fillStyle = 'rgba(0,0,0,.03)';
     ctx.fillRect(0, 0, W, H);
     ctx.globalCompositeOperation = 'source-over';
 
     t++;
-    if (t % 400 === 0) nube();
+    if (t % 420 === 0) nube();
 
     for (const c of caminantes){
-      c.dx += (Math.random() - .5) * .42;
-      c.dy += (Math.random() - .5) * .42;
+      c.dx += (Math.random() - .5) * .4;
+      c.dy += (Math.random() - .5) * .4;
       c.dx *= .965; c.dy *= .965;
       const nx = c.x + c.dx * c.paso;
       const ny = c.y + c.dy * c.paso;
-      ctx.strokeStyle = 'rgba(31,58,95,.20)';
-      ctx.lineWidth = .85;
+      ctx.strokeStyle = 'rgba(0,0,0,.17)';
+      ctx.lineWidth = .8;
       ctx.beginPath();
       ctx.moveTo(c.x, c.y);
       ctx.lineTo(nx, ny);
@@ -352,14 +301,13 @@ document.addEventListener('click', function arranque(){
       if (c.vida < 0 || c.x < -20 || c.x > W + 20 || c.y < -20 || c.y > H + 20){
         c.x = Math.random() * W; c.y = Math.random() * H;
         c.dx = (Math.random() - .5); c.dy = (Math.random() - .5);
-        c.vida = 200 + Math.random() * 500;
+        c.vida = 180 + Math.random() * 460;
       }
     }
     if (!quieto) requestAnimationFrame(paso);
   }
 
-  medir();
-  sembrar();
+  medir(); sembrar();
   if (quieto){ for (let i = 0; i < 900; i++) paso(); }
   else requestAnimationFrame(paso);
 
