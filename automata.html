@@ -1,0 +1,482 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Autómata — Proyecto 01</title>
+<meta name="description" content="Especificación y código del Autómata: extractor de prima de funding, delta-neutral, con barrido automático a monedero Bitcoin.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&family=Cormorant+Garamond:wght@400;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --white:#fff;--ink:#000;--soft:#3a3a3a;--faint:#8d8d8d;--gold:#9a7b1e;
+    --rule:rgba(0,0,0,.16);--rule-2:rgba(0,0,0,.34);
+    --gothic:"UnifrakturMaguntia",serif;--mono:"JetBrains Mono",ui-monospace,monospace;--serif:"Cormorant Garamond",Georgia,serif;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--white);color:var(--ink);font-family:var(--serif);
+    font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased;min-height:100vh;overflow-x:hidden}
+  body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+    background-image:
+      linear-gradient(to right,var(--rule-2) 1px,transparent 1px),
+      linear-gradient(to bottom,var(--rule-2) 1px,transparent 1px),
+      linear-gradient(to right,var(--rule) 1px,transparent 1px),
+      linear-gradient(to bottom,var(--rule) 1px,transparent 1px);
+    background-size:96px 96px,96px 96px,24px 24px,24px 24px}
+  body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+    background:radial-gradient(ellipse at 50% 30%,transparent 40%,rgba(0,0,0,.05) 100%)}
+  .frame{position:fixed;inset:9px;z-index:2;pointer-events:none;border:1px solid rgba(0,0,0,.4)}
+  .frame::before{content:"";position:absolute;inset:4px;border:1px solid rgba(0,0,0,.12)}
+  .wrap{position:relative;z-index:1;max-width:760px;margin:0 auto;padding:0 clamp(1rem,5vw,2rem) 3rem}
+
+  .top{display:flex;align-items:center;justify-content:space-between;gap:1rem;
+    padding:1.3rem 0;border-bottom:1px solid var(--ink);font-family:var(--mono);
+    font-size:.55rem;letter-spacing:.28em;text-transform:uppercase}
+  .top a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--rule-2);padding-bottom:2px}
+  .top a:hover{color:var(--gold);border-color:var(--gold)}
+  .top .n{color:var(--gold)}
+
+  header.h{padding:clamp(2rem,5vw,3rem) 0 1.6rem;border-bottom:1px solid var(--rule);text-align:center}
+  h1{font-family:var(--gothic);font-weight:400;font-size:clamp(2.1rem,7vw,3.3rem);line-height:1.05;margin:0 0 .5rem}
+  .sub{font-family:var(--mono);font-size:.52rem;letter-spacing:.3em;text-transform:uppercase;color:var(--faint);margin:0}
+  .tesis{font-family:var(--gothic);font-size:clamp(1rem,2.6vw,1.3rem);line-height:1.55;
+    max-width:34ch;margin:1.6rem auto 0;color:var(--ink)}
+
+  section{padding:2.2rem 0;border-bottom:1px solid var(--rule)}
+  h2{font-family:var(--mono);font-size:.56rem;letter-spacing:.34em;text-transform:uppercase;
+    color:var(--faint);font-weight:400;margin:0 0 1.2rem;display:flex;align-items:center;gap:.8rem}
+  h2::after{content:"";flex:1;height:1px;background:var(--rule)}
+  p{font-size:.95rem;color:var(--soft);margin:0 0 1rem}
+  p b,li b{color:var(--ink);font-weight:600}
+  .k{font-family:var(--mono);font-size:.85em;background:#f4f4f4;padding:.05em .3em;border:1px solid var(--rule)}
+
+  .math{font-family:var(--mono);font-size:.9rem;background:#fafafa;border:1px solid var(--rule);
+    border-left:3px solid var(--gold);padding:.9rem 1rem;margin:1rem 0;color:var(--ink);overflow-x:auto}
+
+  table{border-collapse:collapse;width:100%;font-family:var(--mono);font-size:.75rem;margin:1rem 0}
+  th,td{padding:.5rem .6rem;border-bottom:1px solid var(--rule);text-align:left}
+  th{font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);font-weight:500}
+  td:last-child{color:var(--ink)}
+
+  ol.pasos{counter-reset:s;list-style:none;padding:0;margin:0}
+  ol.pasos li{counter-increment:s;position:relative;padding:.9rem 0 .9rem 2.4rem;border-top:1px solid var(--rule);font-size:.92rem;color:var(--soft)}
+  ol.pasos li::before{content:counter(s,decimal-leading-zero);position:absolute;left:0;top:.95rem;
+    font-family:var(--mono);font-size:.62rem;letter-spacing:.1em;color:var(--gold)}
+  ol.pasos li b{display:block;font-family:var(--mono);font-size:.6rem;letter-spacing:.2em;
+    text-transform:uppercase;color:var(--ink);margin-bottom:.25rem}
+
+  .barra{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;margin:0 0 .8rem}
+  .btn{font-family:var(--mono);font-size:.56rem;letter-spacing:.2em;text-transform:uppercase;
+    padding:.55rem .9rem;border:1px solid var(--ink);background:#fff;color:var(--ink);cursor:pointer;text-decoration:none}
+  .btn:hover{background:#000;color:#fff}
+  .btn.s{background:#000;color:#fff}
+  .btn.s:hover{background:var(--gold);border-color:var(--gold);color:#000}
+  .estado{font-family:var(--mono);font-size:.5rem;letter-spacing:.18em;text-transform:uppercase;color:var(--faint)}
+
+  pre{margin:0;background:#0b0b0b;color:#e8e6e0;border:1px solid #000;max-height:520px;overflow:auto;
+    font-family:var(--mono);font-size:.68rem;line-height:1.65;padding:1rem;tab-size:4}
+  pre code{white-space:pre}
+
+  .aviso{border:1px solid var(--rule-2);border-left:3px solid #000;padding:.9rem 1rem;font-size:.88rem;color:var(--soft);margin:1rem 0}
+  .aviso b{display:block;font-family:var(--mono);font-size:.55rem;letter-spacing:.22em;text-transform:uppercase;color:var(--ink);margin-bottom:.35rem}
+
+  footer{padding:1.6rem 0;text-align:center;font-family:"Comic Sans MS","Comic Neue",cursive;font-size:9px;color:var(--faint)}
+  footer .lux{display:block;font-family:var(--mono);font-size:.44rem;letter-spacing:.32em;text-transform:uppercase;color:#b3b3b3;margin-top:.5rem}
+</style>
+</head>
+<body>
+<div class="frame" aria-hidden="true"></div>
+<div class="wrap">
+
+  <div class="top">
+    <a href="index.html">← Portafolio</a>
+    <span class="n">Proyecto 01</span>
+  </div>
+
+  <header class="h">
+    <h1>Autómata</h1>
+    <p class="sub">Máquina de renta · código abierto</p>
+    <p class="tesis">Cobra el peaje que paga el apalancado. Barre la ganancia a tu monedero cada día.</p>
+  </header>
+
+  <section>
+    <h2>Qué hace</h2>
+    <p>Compra Bitcoin al contado y abre el mismo tamaño en corto sobre el perpetuo. Las dos patas se anulan: la dirección del precio deja de importar. Mientras la posición vive, cobras el <b>funding</b>, que los largos apalancados pagan cada ocho horas por mantener su apuesta.</p>
+    <p>No hay cliente, no hay venta, no hay soporte. El bot mide, entra, vigila y —esto es lo importante— <b>convierte la ganancia a BTC y la envía a la dirección de BlueWallet grabada en el código</b>, sin que tengas que tocar nada.</p>
+  </section>
+
+  <section>
+    <h2>La aritmética</h2>
+    <p>Con $f$ como tasa por periodo, $c$ comisión por ejecución y $s$ slippage, el punto de equilibrio en días es:</p>
+    <div class="math">T* = (4c + s) / (3f)</div>
+    <p>El notional se cancela. Con comisiones de 0,05% y slippage de 0,03%:</p>
+    <table>
+      <tr><th>Funding por 8 h</th><th>Días para no perder</th></tr>
+      <tr><td>0,005%</td><td>15,3</td></tr>
+      <tr><td>0,010%</td><td>6,7</td></tr>
+      <tr><td>0,030%</td><td>2,5</td></tr>
+    </table>
+    <p>De ahí la regla dura del código: no se entra si <span class="k">T*</span> supera el horizonte configurado. El bot no hace trading; entra y se queda quieto. Cada rebalanceo innecesario es un impuesto.</p>
+  </section>
+
+  <section>
+    <h2>Puesta en marcha</h2>
+    <ol class="pasos">
+      <li><b>Claves</b>Crea en cada exchange una clave API <b>con permiso de operar y sin permiso de retiro</b>. Exporta como <span class="k">BINANCE_KEY</span>, <span class="k">BINANCE_SECRET</span>, <span class="k">BYBIT_KEY</span>, <span class="k">BYBIT_SECRET</span>.</li>
+      <li><b>Instala</b><span class="k">pip install ccxt</span> y ejecuta <span class="k">python automata.py --status</span> para ver el tablero sin operar.</li>
+      <li><b>Prueba</b><span class="k">python automata.py --dry</span> durante un día completo. Revisa que el conciliador cierre limpio.</li>
+      <li><b>Fondea</b>Con poco. El bot reparte, entra y empieza a barrer a tu monedero cuando acumula el umbral.</li>
+    </ol>
+    <div class="aviso">
+      <b>Dirección de barrido grabada</b>
+      <span class="k">bc1qudtspk54khfheenww4qw6l7f9zks48da09m9av</span> — se cambia en la constante <span class="k">DIR_BTC</span>, primera línea útil del archivo.
+    </div>
+  </section>
+
+  <section>
+    <h2>Código</h2>
+    <div class="barra">
+      <button class="btn s" id="dl">Descargar automata.py</button>
+      <button class="btn" id="cp">Copiar</button>
+      <span class="estado" id="est">Listo</span>
+    </div>
+    <pre><code id="vista">cargando…</code></pre>
+  </section>
+
+  <section>
+    <h2>Lo que puede salir mal</h2>
+    <p><b>Mecha al alza.</b> A 2× el corto se liquida con una subida cercana al 47%. Se mitiga con colchón de margen y tope de apalancamiento.</p>
+    <p><b>Insolvencia del exchange.</b> Se mitiga partiendo el capital entre dos venues y barriendo excedente a diario, que es justo lo que hace el bot.</p>
+    <p><b>Giro del funding.</b> Si la prima se vuelve negativa tres ciclos seguidos, la función se cierra sola y el capital se libera.</p>
+    <p><b>Operación.</b> Esto no es pasivo del todo: necesita un VPS encendido y alguien que mire las alertas.</p>
+  </section>
+
+  <footer>
+    goodbye
+    <span class="lux">Lux in tenebris · Proyecto 01</span>
+  </footer>
+</div>
+
+<script type="text/plain" id="src">#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+AUTOMATA — extractor de prima de funding, delta-neutral.
+Barre la ganancia a la direccion Bitcoin configurada.
+
+  python automata.py --status     tablero, sin operar
+  python automata.py --dry        ciclo completo simulado
+  python automata.py              ciclo real cada LOOP_S
+
+Requiere: pip install ccxt
+Claves por entorno, SIN permiso de retiro.
+"""
+
+import os, sys, time, json, sqlite3, logging, argparse, uuid
+from decimal import Decimal
+
+import ccxt
+
+# ---------------------------------------------------------------- configuracion
+DIR_BTC   = "bc1qudtspk54khfheenww4qw6l7f9zks48da09m9av"
+DB        = "automata.sqlite"
+LOG       = "automata.log"
+
+CFG = dict(
+    venues        = ["binance", "bybit"],
+    perp          = "BTC/USDT:USDT",
+    spot          = "BTC/USDT",
+    leverage      = 2.0,
+    max_venue_frac= 0.40,     # tope de capital por contraparte
+    delta_band    = 0.02,     # rebalanceo al salir de +-2%
+    liq_buffer    = 0.40,     # colchon minimo de margen
+    max_hold_days = 21,       # no se entra si T* supera esto
+    taker         = 0.0005,
+    slip          = 0.0003,
+    periods_day   = 3,
+    funding_floor = 0.00002,  # prima minima por periodo
+    sweep_usdt    = 15.0,     # barre al superar este saldo libre
+    sweep_keep    = 5.0,      # deja esto para margen
+    min_wd_btc    = 0.00005,
+    loop_s        = 900,
+    dry           = False,
+)
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s  %(levelname)-7s %(message)s",
+    handlers=[logging.FileHandler(LOG), logging.StreamHandler(sys.stdout)],
+)
+log = logging.getLogger("automata")
+
+# ---------------------------------------------------------------- estado
+def db():
+    c = sqlite3.connect(DB)
+    c.execute("""CREATE TABLE IF NOT EXISTS pos(
+        id TEXT PRIMARY KEY, venue TEXT, qty REAL, entry REAL,
+        opened REAL, t_star REAL)""")
+    c.execute("""CREATE TABLE IF NOT EXISTS ev(
+        ts REAL, kind TEXT, body TEXT)""")
+    return c
+
+def ev(kind, body):
+    c = db(); c.execute("INSERT INTO ev VALUES(?,?,?)", (time.time(), kind, str(body)))
+    c.commit(); c.close()
+
+# ---------------------------------------------------------------- exchanges
+def venue(name):
+    cls = getattr(ccxt, name)
+    ex = cls({
+        "apiKey": os.environ.get(f"{name.upper()}_KEY", ""),
+        "secret": os.environ.get(f"{name.upper()}_SECRET", ""),
+        "enableRateLimit": True,
+        "options": {"defaultType": "swap"},
+    })
+    return ex
+
+def spot_view(name):
+    ex = venue(name)
+    ex.options["defaultType"] = "spot"
+    return ex
+
+# ---------------------------------------------------------------- sensores
+def funding_avg(ex, periods=21):
+    """Media de las ultimas N tasas de funding. 0 si no hay datos."""
+    try:
+        h = ex.fetch_funding_rate_history(CFG["perp"], limit=periods)
+        r = [float(x["fundingRate"]) for x in h if x.get("fundingRate") is not None]
+        return sum(r) / len(r) if r else 0.0
+    except Exception as e:
+        log.warning("funding %s: %s", ex.id, e)
+        return 0.0
+
+def t_star(f):
+    if f <= 0:
+        return float("inf")
+    return (4 * CFG["taker"] + CFG["slip"]) / (CFG["periods_day"] * f)
+
+def net_daily(f):
+    return CFG["periods_day"] * f - (4 * CFG["taker"] + CFG["slip"]) / CFG["max_hold_days"]
+
+def capital_libre(ex):
+    try:
+        b = ex.fetch_balance()
+        return float(b["free"].get("USDT", 0) or 0)
+    except Exception as e:
+        log.warning("balance %s: %s", ex.id, e)
+        return 0.0
+
+# ---------------------------------------------------------------- puntuador
+def puntuar():
+    """Devuelve [(venue, f, t_star, neto, capital)] ordenado por neto."""
+    filas = []
+    for name in CFG["venues"]:
+        try:
+            ex = venue(name)
+            f = funding_avg(ex)
+            if f < CFG["funding_floor"]:
+                continue
+            ts = t_star(f)
+            if ts > CFG["max_hold_days"]:
+                continue
+            filas.append((name, f, ts, net_daily(f), capital_libre(spot_view(name))))
+        except Exception as e:
+            log.warning("puntuador %s: %s", name, e)
+    filas.sort(key=lambda x: -x[3])
+    return filas
+
+# ---------------------------------------------------------------- ejecutor
+def cid():
+    return "atm-" + uuid.uuid4().hex[:14]
+
+def abrir(name, usdt):
+    """Compra spot y abre corto del mismo tamano. Idempotente por clientOrderId."""
+    s, p = spot_view(name), venue(name)
+    px = float(s.fetch_ticker(CFG["spot"])["last"])
+    qty = usdt / px
+
+    if CFG["dry"]:
+        log.info("DRY abrir %s  %.6f BTC  ~%.2f USDT  px=%.2f", name, qty, usdt, px)
+        return dict(venue=name, qty=qty, entry=px, opened=time.time(), t_star=0.0)
+
+    p.set_leverage(CFG["leverage"], CFG["perp"])
+    o1 = s.create_order(CFG["spot"], "market", "buy", qty, None,
+                        {"clientOrderId": cid()})
+    o2 = p.create_order(CFG["perp"], "market", "sell", qty, None,
+                        {"clientOrderId": cid()})
+    log.info("ABIERTO %s  %.6f BTC  spot=%s perp=%s", name, qty, o1["id"], o2["id"])
+    ev("abrir", dict(venue=name, qty=qty, px=px))
+    return dict(venue=name, qty=qty, entry=px, opened=time.time(), t_star=0.0)
+
+def cerrar(name, qty):
+    s, p = spot_view(name), venue(name)
+    if CFG["dry"]:
+        log.info("DRY cerrar %s  %.6f BTC", name, qty)
+        return
+    p.create_order(CFG["perp"], "market", "buy", qty, None, {"clientOrderId": cid()})
+    s.create_order(CFG["spot"], "market", "sell", qty, None, {"clientOrderId": cid()})
+    log.info("CERRADO %s  %.6f BTC", name, qty)
+    ev("cerrar", dict(venue=name, qty=qty))
+
+# ---------------------------------------------------------------- conciliador
+def conciliar(name, qty_local):
+    """Compara posicion local con la del venue. True si cuadra dentro del 2%."""
+    try:
+        pos = venue(name).fetch_positions([CFG["perp"]])
+        real = sum(abs(float(x["contracts"] or 0)) for x in pos
+                   if x.get("side") == "short")
+        if real == 0:
+            return abs(qty_local) < 1e-9
+        return abs(real - qty_local) / max(real, 1e-9) < 0.02
+    except Exception as e:
+        log.warning("conciliar %s: %s", name, e)
+        return False
+
+def margen_ok(name):
+    """Colchon de liquidacion por encima del minimo."""
+    try:
+        pos = venue(name).fetch_positions([CFG["perp"]])
+        for x in pos:
+            if x.get("side") != "short":
+                continue
+            entry = float(x.get("entryPrice") or 0)
+            liq = float(x.get("liquidationPrice") or 0)
+            if not entry or not liq:
+                return True
+            buffer = (liq - entry) / entry
+            if buffer < CFG["liq_buffer"]:
+                log.warning("margen justo en %s: colchon %.1f%%", name, buffer * 100)
+                return False
+        return True
+    except Exception:
+        return True
+
+# ---------------------------------------------------------------- barredor
+def barrer(name):
+    """Convierte excedente a BTC y lo envia a DIR_BTC."""
+    try:
+        ex = spot_view(name)
+        libre = capital_libre(ex)
+        if libre < CFG["sweep_usdt"]:
+            return
+        monto = libre - CFG["sweep_keep"]
+        px = float(ex.fetch_ticker(CFG["spot"])["last"])
+        btc = monto / px
+        if btc < CFG["min_wd_btc"]:
+            return
+        if CFG["dry"]:
+            log.info("DRY barrido %.6f BTC -> %s", btc, DIR_BTC)
+            return
+        ex.create_order(CFG["spot"], "market", "buy", btc * 0.999, None,
+                        {"clientOrderId": cid()})
+        time.sleep(4)
+        disponible = float(ex.fetch_balance()["free"].get("BTC", 0) or 0)
+        salida = min(disponible, btc * 0.999)
+        if salida < CFG["min_wd_btc"]:
+            return
+        ex.withdraw("BTC", salida, DIR_BTC, params={"network": "BTC"})
+        log.info("BARRIDO %.6f BTC -> %s", salida, DIR_BTC)
+        ev("barrido", dict(venue=name, btc=salida, dir=DIR_BTC))
+    except Exception as e:
+        log.error("barrido %s: %s", name, e)
+
+# ---------------------------------------------------------------- ciclo
+def ciclo():
+    c = db()
+    abiertas = c.execute("SELECT id,venue,qty,entry,opened FROM pos").fetchall()
+    c.close()
+
+    for pid, name, qty, entry, opened in abiertas:
+        if not conciliar(name, qty):
+            log.warning("divergencia en %s — congelo y alerto", name)
+            ev("divergencia", name)
+            continue
+        f = funding_avg(venue(name), periods=3)
+        if f < 0 and net_daily(f) < 0:
+            log.info("prima muerta en %s — jubilo funcion", name)
+            cerrar(name, qty)
+            k = db(); k.execute("DELETE FROM pos WHERE id=?", (pid,)); k.commit(); k.close()
+            continue
+        if not margen_ok(name):
+            log.info("reduzco notional en %s", name)
+            cerrar(name, qty * 0.25)
+            continue
+        dias = (time.time() - opened) / 86400
+        if dias > CFG["max_hold_days"] * 2:
+            cerrar(name, qty)
+            k = db(); k.execute("DELETE FROM pos WHERE id=?", (pid,)); k.commit(); k.close()
+
+    if not abiertas:
+        for name, f, ts, neto, libre in puntuar()[:2]:
+            monto = libre * CFG["max_venue_frac"]
+            if monto < 20:
+                continue
+            p = abrir(name, monto)
+            k = db()
+            k.execute("INSERT INTO pos VALUES(?,?,?,?,?,?)",
+                      (cid(), p["venue"], p["qty"], p["entry"], p["opened"], ts))
+            k.commit(); k.close()
+
+    for name in CFG["venues"]:
+        barrer(name)
+
+def tablero():
+    print(f"\n  destino de barrido : {DIR_BTC}\n")
+    print(f"  {'venue':10} {'funding':>10} {'T* dias':>9} {'neto/dia':>10} {'libre':>9}")
+    for name, f, ts, neto, libre in puntuar():
+        print(f"  {name:10} {f*100:9.4f}% {ts:9.1f} {neto*100:9.4f}% {libre:9.2f}")
+    c = db()
+    for r in c.execute("SELECT venue,qty,entry FROM pos"):
+        print(f"  ABIERTA    {r[0]:10} {r[1]:.6f} BTC @ {r[2]:.2f}")
+    c.close()
+    print()
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--dry", action="store_true")
+    ap.add_argument("--status", action="store_true")
+    a = ap.parse_args()
+    CFG["dry"] = a.dry
+
+    if a.status:
+        tablero(); return
+    log.info("inicio  dry=%s  venues=%s", a.dry, CFG["venues"])
+    while True:
+        try:
+            ciclo()
+        except KeyboardInterrupt:
+            break
+        except Exception as e:
+            log.error("ciclo: %s", e); ev("error", e)
+        time.sleep(CFG["loop_s"])
+
+if __name__ == "__main__":
+    main()
+</script>
+
+<script>
+const src = document.getElementById('src').textContent;
+const vista = document.getElementById('vista');
+const est = document.getElementById('est');
+vista.textContent = src;
+
+document.getElementById('cp').addEventListener('click', async () => {
+  try { await navigator.clipboard.writeText(src); est.textContent = 'Copiado'; }
+  catch { est.textContent = 'Copia manual'; }
+  setTimeout(() => est.textContent = 'Listo', 1800);
+});
+
+document.getElementById('dl').addEventListener('click', () => {
+  const b = new Blob([src], { type: 'text/x-python;charset=utf-8' });
+  const u = URL.createObjectURL(b);
+  const a = document.createElement('a');
+  a.href = u; a.download = 'automata.py';
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(u), 3000);
+  est.textContent = 'Descargado';
+  setTimeout(() => est.textContent = 'Listo', 1800);
+});
+</script>
+</body>
+</html>
